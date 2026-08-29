@@ -9,22 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.FileProviders;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-    Args = args,
-    ContentRootPath = Directory.GetCurrentDirectory()
-});
-
-// Disable file watching in production to avoid inotify limit issues
-builder.Host.ConfigureAppConfiguration((context, config) =>
-{
-    if (context.HostingEnvironment.IsProduction())
-    {
-        config.Sources.Clear();
-        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
-        config.AddEnvironmentVariables();
-    }
-});
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
@@ -96,7 +81,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Disable HTTPS redirection in production container to avoid port binding issues
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseRouting();
 
 app.UseCors("AllowFrontendOnly");
