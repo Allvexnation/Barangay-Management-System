@@ -9,18 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.FileProviders;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-    Args = args,
-    ContentRootPath = Directory.GetCurrentDirectory()
-});
-
-// In production, only use environment variables to avoid file watching issues
-if (builder.Environment.IsProduction())
-{
-    builder.Configuration.Sources.Clear();
-    builder.Configuration.AddEnvironmentVariables();
-}
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
