@@ -14,11 +14,13 @@ public class AdminAuthController : ControllerBase
 {
     private readonly IMongoDbContext _context;
     private readonly IJwtService _jwtService;
+    private readonly ICloudinaryService _cloudinaryService;
 
-    public AdminAuthController(IMongoDbContext context, IJwtService jwtService)
+    public AdminAuthController(IMongoDbContext context, IJwtService jwtService, ICloudinaryService cloudinaryService)
     {
         _context = context;
         _jwtService = jwtService;
+        _cloudinaryService = cloudinaryService;
     }
 
     [HttpPost("login")]
@@ -163,26 +165,20 @@ public class AdminAuthController : ControllerBase
             return BadRequest(new { message = "User ID is required" });
         }
 
-        var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
-        if (!Directory.Exists(uploadsPath))
+        try
         {
-            Directory.CreateDirectory(uploadsPath);
+            var photoUrl = await _cloudinaryService.UploadImageAsync(photo);
+            
+            var updateFilter = Builders<AdminUser>.Filter.Eq(u => u.Id, userId);
+            var updateDefinition = Builders<AdminUser>.Update.Set(u => u.PhotoUrl, photoUrl);
+            
+            await _context.AdminUsers.UpdateOneAsync(updateFilter, updateDefinition);
+
+            return Ok(new { success = true, photoUrl = photoUrl });
         }
-
-        var fileName = $"{userId}_{Guid.NewGuid()}{Path.GetExtension(photo.FileName)}";
-        var filePath = Path.Combine(uploadsPath, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        catch (Exception ex)
         {
-            await photo.CopyToAsync(stream);
+            return BadRequest(new { message = ex.Message });
         }
-
-        var photoUrl = $"/uploads/profiles/{fileName}";
-        var updateFilter = Builders<AdminUser>.Filter.Eq(u => u.Id, userId);
-        var updateDefinition = Builders<AdminUser>.Update.Set(u => u.PhotoUrl, photoUrl);
-        
-        await _context.AdminUsers.UpdateOneAsync(updateFilter, updateDefinition);
-
-        return Ok(new { success = true, photoUrl = photoUrl });
     }
 }
