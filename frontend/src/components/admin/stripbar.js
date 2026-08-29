@@ -142,13 +142,20 @@ function setupDropdown(buttonId, menuId, otherMenuId) {
             const rect = btn.getBoundingClientRect();
             menu.style.top = `${rect.bottom + 4}px`;
             
+            menu.style.maxWidth = '280px';
+            
             if (window.innerWidth < 768) {
-                menu.style.left = 'auto';
-                menu.style.right = '10px';
-                menu.style.width = 'auto';
-                menu.style.maxWidth = '280px';
+                if (buttonId === 'settings-dropdown-btn') {
+                    menu.style.left = 'auto';
+                    menu.style.right = '10px';
+                    menu.style.width = 'auto';
+                } else {
+                    menu.style.left = `${Math.max(10, rect.left)}px`;
+                    menu.style.right = 'auto';
+                    menu.style.width = 'auto';
+                }
             } else {
-                menu.style.maxWidth = '280px';
+                menu.style.right = 'auto';
                 const expectedRight = rect.left + menu.offsetWidth;
                 if (expectedRight > window.innerWidth - 10) {
                     menu.style.left = `${Math.max(10, window.innerWidth - menu.offsetWidth - 10)}px`;

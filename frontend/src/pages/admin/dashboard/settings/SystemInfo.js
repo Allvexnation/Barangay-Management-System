@@ -18,7 +18,7 @@ export function SystemInfo() {
         </div>
         `;
     }
-    
+
     return `
         <div class="min-h-screen bg-gray-50" style="overflow-y: auto;">
             ${AdminNavbar()}
@@ -27,14 +27,16 @@ export function SystemInfo() {
                 <div class="mb-6">
                     <h1 class="text-2xl font-semibold text-gray-900">Barangay & System Information</h1>
                     <p class="text-sm text-gray-500 mt-1">Configure your barangay's official details, jurisdiction, and official seal.</p>
-                    <input type="hidden" name="id" id="settingsId" value="${user.id || ''}">
+                </div>
 
+                <form id="system-info-form">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 space-y-6">
                             <div class="bg-white border border-gray-200 rounded-lg p-5 sm:p-6 shadow-sm">
                                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
                                     <i data-lucide="landmark" class="w-4 h-4 text-blue-900"></i>
                                     <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Jurisdiction Details</h2>
+                                </div>
 
                                 <div class="space-y-4">
                                     <div>
@@ -177,13 +179,13 @@ export function SystemInfo() {
 export function initSystemInfo() {
     initAdminNavbar();
     initSystemInfoAnimations();
-    
+
     const form = document.getElementById('system-info-form');
     const logoInput = document.getElementById('logo');
     const logoPreview = document.getElementById('logo-preview');
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
-    
+
     let existingSystemInfo = null;
     let selectedLogo = null;
 
@@ -193,7 +195,7 @@ export function initSystemInfo() {
         try {
             const data = await getSystemInfo();
             existingSystemInfo = data;
-            
+
             const barangayNameEl = document.getElementById('barangayName');
             const cityEl = document.getElementById('city');
             const provinceEl = document.getElementById('province');
@@ -203,7 +205,7 @@ export function initSystemInfo() {
             if (cityEl) cityEl.value = data.city || '';
             if (provinceEl) provinceEl.value = data.province || '';
             if (zipCodeEl) zipCodeEl.value = data.zipCode || '';
-            
+
             if (data.logoUrl && logoPreview) {
                 logoPreview.src = data.logoUrl;
             }
@@ -213,12 +215,12 @@ export function initSystemInfo() {
     }
 
     if (logoInput) {
-        logoInput.addEventListener('change', function(e) {
+        logoInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 selectedLogo = file;
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     if (logoPreview) logoPreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -227,12 +229,12 @@ export function initSystemInfo() {
     }
 
     if (form) {
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const isUpdate = existingSystemInfo !== null;
             const actionText = isUpdate ? 'update' : 'save';
-            
+
             openConfirmDialog({
                 title: isUpdate ? 'Confirm Update' : 'Confirm Save',
                 message: `Are you sure you want to ${actionText} the barangay system information?`,
@@ -249,14 +251,14 @@ export function initSystemInfo() {
     async function performSave() {
         const loadingMessage = existingSystemInfo ? 'Updating system info...' : 'Saving system info...';
         const successMessage = existingSystemInfo ? 'System info updated successfully!' : 'System info saved successfully!';
-        
+
         showToast(loadingMessage, 'loading');
         if (saveBtn) {
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Saving...</span>';
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
-        
+
         const systemInfoData = {
             barangayName: document.getElementById('barangayName').value.trim(),
             city: document.getElementById('city').value.trim(),
@@ -272,7 +274,7 @@ export function initSystemInfo() {
             } else {
                 result = await createSystemInfo(systemInfoData);
             }
-            
+
             updateToast(successMessage, 'success');
             existingSystemInfo = result;
             selectedLogo = null;
@@ -290,7 +292,7 @@ export function initSystemInfo() {
     }
 
     if (resetBtn) {
-        resetBtn.addEventListener('click', function() {
+        resetBtn.addEventListener('click', function () {
             openConfirmDialog({
                 title: 'Confirm Reset',
                 message: 'Are you sure you want to reset the form? All unsaved changes will be lost.',
@@ -315,7 +317,7 @@ export function initSystemInfo() {
             if (cityEl) cityEl.value = existingSystemInfo.city || '';
             if (provinceEl) provinceEl.value = existingSystemInfo.province || '';
             if (zipCodeEl) zipCodeEl.value = existingSystemInfo.zipCode || '';
-            
+
             if (logoPreview) {
                 logoPreview.src = existingSystemInfo.logoUrl || defaultSealPlaceholder;
             }
@@ -356,7 +358,7 @@ async function loadAuditLogs() {
 
     try {
         const auditLogs = await getSystemInfoAuditLogs();
-        
+
         if (!auditLogs || auditLogs.length === 0) {
             container.innerHTML = '<p class="text-sm text-gray-500">No audit history available.</p>';
             return;
@@ -372,7 +374,7 @@ async function loadAuditLogs() {
             });
 
             let detailsHtml = '';
-            
+
             if (log.action === 'Create' && log.newValues) {
                 detailsHtml = Object.entries(log.newValues).map(([field, value]) => `
                     <div class="text-xs text-gray-600 mt-1">
@@ -420,10 +422,11 @@ async function loadAuditLogs() {
                 </div>
             `;
         }).join('');
-        
+
         animateAuditLogs('#auditLogsContainer > div');
     } catch (error) {
         console.error('Error loading audit logs:', error);
         container.innerHTML = '<p class="text-sm text-red-500">Failed to load audit logs.</p>';
     }
 }
+

@@ -70,27 +70,27 @@ export function ensureAnimationStyles() {
         }
 
         .modal-overlay-fade-in {
-            animation: fadeIn 0.2s ease-out forwards;
+            animation: fadeIn 0.1s ease-out forwards;
         }
 
         .modal-overlay-fade-out {
-            animation: fadeOut 0.2s ease-in forwards;
+            animation: fadeOut 0.1s ease-in forwards;
         }
 
         .modal-content-scale-in {
-            animation: scaleIn 0.25s ease-out forwards;
+            animation: scaleIn 0.15s ease-out forwards;
         }
 
         .modal-content-scale-out {
-            animation: scaleOut 0.2s ease-in forwards;
+            animation: scaleOut 0.1s ease-in forwards;
         }
 
         .modal-content-slide-in {
-            animation: slideIn 0.25s ease-out forwards;
+            animation: slideIn 0.15s ease-out forwards;
         }
 
         .modal-content-slide-out {
-            animation: slideOut 0.2s ease-in forwards;
+            animation: slideOut 0.1s ease-in forwards;
         }
     `;
     document.head.appendChild(style);
@@ -125,7 +125,7 @@ export function animateModalClose(modalOverlay, modalContent, animationType = 's
 
         setTimeout(() => {
             resolve();
-        }, 200);
+        }, 100);
     });
 }
 

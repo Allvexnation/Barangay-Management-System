@@ -46,9 +46,9 @@ export function showAuditLogDetails(index) {
                 const oldVal = value.oldValue !== undefined ? formatValue(value.oldValue) : 'N/A';
                 const newVal = value.newValue !== undefined ? formatValue(value.newValue) : 'N/A';
                 return `
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                         <span class="text-red-600 line-through">${oldVal}</span>
-                        <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400"></i>
+                        <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400 hidden sm:block"></i>
                         <span class="text-green-600 font-medium">${newVal}</span>
                     </div>
                 `;
@@ -64,7 +64,7 @@ export function showAuditLogDetails(index) {
         if (isImageUrl) {
             return `
                 <div class="flex flex-col gap-2">
-                    <img src="${strValue}" alt="Image" class="max-w-[200px] h-20 object-contain rounded border border-gray-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="${strValue}" alt="Image" class="max-w-[200px] w-full h-20 object-contain rounded border border-gray-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span class="text-xs text-gray-500 break-all hidden">Failed to load image</span>
                     <a href="${strValue}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs underline">Open image in new tab</a>
                 </div>
@@ -84,8 +84,8 @@ export function showAuditLogDetails(index) {
                     ${Object.entries(log.changes).map(([key, value]) => {
                         return `
                             <div class="mb-2 last:mb-0">
-                                <span class="font-medium text-blue-800">${key}:</span>
-                                <div class="ml-2 mt-1">${formatValue(value)}</div>
+                                <span class="font-medium text-blue-800 block">${key}:</span>
+                                <div class="ml-0 sm:ml-2 mt-1">${formatValue(value)}</div>
                             </div>
                         `;
                     }).join('')}
@@ -105,11 +105,11 @@ export function showAuditLogDetails(index) {
                             const newVal = value.newValue !== undefined ? formatValue(value.newValue) : 'N/A';
                             return `
                                 <div class="mb-2 last:mb-0">
-                                    <span class="font-medium text-green-800">${key}:</span>
-                                    <div class="ml-2 mt-1">
-                                        <div class="flex items-center gap-2">
+                                    <span class="font-medium text-green-800 block">${key}:</span>
+                                    <div class="ml-0 sm:ml-2 mt-1">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                                             <span class="text-red-600 line-through">${oldVal}</span>
-                                            <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400"></i>
+                                            <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400 hidden sm:block"></i>
                                             <span class="text-green-600 font-medium">${newVal}</span>
                                         </div>
                                     </div>
@@ -118,8 +118,8 @@ export function showAuditLogDetails(index) {
                         }
                         return `
                             <div class="mb-2 last:mb-0">
-                                <span class="font-medium text-green-800">${key}:</span>
-                                <div class="ml-2 mt-1">${formatValue(value)}</div>
+                                <span class="font-medium text-green-800 block">${key}:</span>
+                                <div class="ml-0 sm:ml-2 mt-1">${formatValue(value)}</div>
                             </div>
                         `;
                     }).join('')}
@@ -139,11 +139,11 @@ export function showAuditLogDetails(index) {
                             const newVal = value.newValue !== undefined ? formatValue(value.newValue) : 'N/A';
                             return `
                                 <div class="mb-2 last:mb-0">
-                                    <span class="font-medium text-yellow-800">${key}:</span>
-                                    <div class="ml-2 mt-1">
-                                        <div class="flex items-center gap-2">
+                                    <span class="font-medium text-yellow-800 block">${key}:</span>
+                                    <div class="ml-0 sm:ml-2 mt-1">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                                             <span class="text-red-600 line-through">${oldVal}</span>
-                                            <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400"></i>
+                                            <i data-lucide="arrow-right" class="w-3 h-3 text-gray-400 hidden sm:block"></i>
                                             <span class="text-green-600 font-medium">${newVal}</span>
                                         </div>
                                     </div>
@@ -152,8 +152,8 @@ export function showAuditLogDetails(index) {
                         }
                         return `
                             <div class="mb-2 last:mb-0">
-                                <span class="font-medium text-yellow-800">${key}:</span>
-                                <div class="ml-2 mt-1">${formatValue(value)}</div>
+                                <span class="font-medium text-yellow-800 block">${key}:</span>
+                                <div class="ml-0 sm:ml-2 mt-1">${formatValue(value)}</div>
                             </div>
                         `;
                     }).join('')}
@@ -168,22 +168,22 @@ export function showAuditLogDetails(index) {
 
     const modalContent = `
         <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                    <span class="text-gray-500">Entity Type:</span>
-                    <span class="ml-2 font-medium text-gray-900">${displayEntityType}</span>
+                    <span class="text-gray-500 block">Entity Type:</span>
+                    <span class="font-medium text-gray-900">${displayEntityType}</span>
                 </div>
                 <div>
-                    <span class="text-gray-500">Entity ID:</span>
-                    <span class="ml-2 font-medium text-gray-900">${log.entityId || 'N/A'}</span>
+                    <span class="text-gray-500 block">Entity ID:</span>
+                    <span class="font-medium text-gray-900">${log.entityId || 'N/A'}</span>
                 </div>
                 <div>
-                    <span class="text-gray-500">Action:</span>
-                    <span class="ml-2 font-medium text-gray-900">${log.action || 'Unknown'}</span>
+                    <span class="text-gray-500 block">Action:</span>
+                    <span class="font-medium text-gray-900">${log.action || 'Unknown'}</span>
                 </div>
                 <div>
-                    <span class="text-gray-500">Timestamp:</span>
-                    <span class="ml-2 font-medium text-gray-900">${timestamp}</span>
+                    <span class="text-gray-500 block">Timestamp:</span>
+                    <span class="font-medium text-gray-900">${timestamp}</span>
                 </div>
             </div>
 

@@ -27,7 +27,7 @@ export function AdminNavbar() {
     const profilePhoto = user.profilePhoto || '';
 
     return `
-    <nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-blue-900 text-white shadow-lg md:sticky md:top-0 z-50">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center" id="barangayDisplay">

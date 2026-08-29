@@ -52,27 +52,30 @@ export function renderOfficialsPage() {
                         <h1 class="text-2xl font-semibold text-gray-900">Barangay Officials</h1>
                         <p class="text-sm text-gray-500 mt-1">Directory of elected and appointed barangay officials and staff.</p>
                     </div>
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex flex-wrap items-center gap-2">
                         <button 
                             type="button" 
                             id="exportBtn" 
-                            class="px-4 py-2 text-sm font-medium text-white bg-green-700 hover:bg-green-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition flex items-center gap-2 shadow-sm">
+                            class="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-white bg-green-700 hover:bg-green-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition flex items-center justify-center gap-2 shadow-sm">
                             <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-                            <span>Export</span>
+                            <span class="sm:hidden">Export</span>
+                            <span class="hidden sm:inline">Export</span>
                         </button>
                         <button 
                             type="button" 
                             id="printBtn" 
-                            class="px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition flex items-center gap-2 shadow-sm">
+                            class="flex-1 sm:flex-none px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition flex items-center justify-center gap-2 shadow-sm">
                             <i data-lucide="printer" class="w-4 h-4 text-gray-500"></i>
-                            <span>Print Roster</span>
+                            <span class="sm:hidden">Print</span>
+                            <span class="hidden sm:inline">Print Roster</span>
                         </button>
                         <button 
                             type="button" 
                             id="addOfficialBtn" 
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition flex items-center gap-2 shadow-sm">
+                            class="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition flex items-center justify-center gap-2 shadow-sm">
                             <i data-lucide="user-plus" class="w-4 h-4"></i>
-                            <span>Add Official</span>
+                            <span class="sm:hidden">Add</span>
+                            <span class="hidden sm:inline">Add Official</span>
                         </button>
                     </div>
                 </div>
