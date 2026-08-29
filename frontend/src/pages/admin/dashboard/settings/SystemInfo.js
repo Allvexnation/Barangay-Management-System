@@ -3,7 +3,7 @@ import { AdminNavbar, initAdminNavbar } from '../../../../components/admin/navba
 import { openConfirmDialog } from '../../../../components/ConfirmDialog.js';
 import { showToast, updateToast } from '../../../../components/ToastMessage.js';
 import { isAdmin } from '../../../../api/token.js';
-import { skeletonText } from '../../../../components/SkeletonLoading.js';
+import { skeletonText, skeletonAvatar, skeletonButton } from '../../../../components/SkeletonLoading.js';
 import { initSystemInfoAnimations, animateAuditLogs } from '../../../../provider/animations/SystemInfoAniamtion.js';
 
 export function SystemInfo() {
@@ -30,7 +30,7 @@ export function SystemInfo() {
                 </div>
 
                 <form id="system-info-form">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div id="form-content" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 space-y-6">
                             <div class="bg-white border border-gray-200 rounded-lg p-5 sm:p-6 shadow-sm">
                                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
@@ -134,6 +134,73 @@ export function SystemInfo() {
                         </div>
                     </div>
 
+                    <div id="form-skeleton" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-5 sm:p-6 shadow-sm">
+                                <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+                                    <i data-lucide="landmark" class="w-4 h-4 text-blue-900"></i>
+                                    <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Jurisdiction Details</h2>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="barangayName" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
+                                            Barangay Name <span class="text-red-500">*</span>
+                                        </label>
+                                        ${skeletonText('w-full', 'h-10')}
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="city" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
+                                                City / Municipality <span class="text-red-500">*</span>
+                                            </label>
+                                            ${skeletonText('w-full', 'h-10')}
+                                        </div>
+
+                                        <div>
+                                            <label for="province" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
+                                                Province <span class="text-red-500">*</span>
+                                            </label>
+                                            ${skeletonText('w-full', 'h-10')}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="zipCode" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
+                                            ZIP Code <span class="text-red-500">*</span>
+                                        </label>
+                                        ${skeletonText('w-1/2', 'h-10')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-1">
+                            <div class="bg-white border border-gray-200 rounded-lg p-5 sm:p-6 shadow-sm flex flex-col items-center text-center">
+                                <div class="w-full flex items-center gap-2 mb-4 pb-3 border-b border-gray-100 text-left">
+                                    <i data-lucide="shield" class="w-4 h-4 text-blue-900"></i>
+                                    <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Official Seal</h2>
+                                </div>
+
+                                <div class="relative group my-2">
+                                    ${skeletonAvatar('w-28 h-28')}
+                                </div>
+
+                                <p class="text-xs text-gray-500 mt-2 mb-4 leading-relaxed">
+                                    Displayed on clearances, certifications, and system headers.
+                                </p>
+
+                                <label class="w-full cursor-pointer px-4 py-2 text-xs font-medium text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition flex items-center justify-center gap-2">
+                                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                                    <span>Choose Seal File</span>
+                                </label>
+
+                                <p class="text-[11px] text-gray-400 mt-2">PNG, JPG, or WEBP up to 2MB</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mt-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                         <button 
                             type="button" 
@@ -185,6 +252,8 @@ export function initSystemInfo() {
     const logoPreview = document.getElementById('logo-preview');
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
+    const formContent = document.getElementById('form-content');
+    const formSkeleton = document.getElementById('form-skeleton');
 
     let existingSystemInfo = null;
     let selectedLogo = null;
@@ -192,6 +261,11 @@ export function initSystemInfo() {
     const defaultSealPlaceholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f4f6'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='11' fill='%239ca3af' text-anchor='middle' dy='.3em'%3ENo Seal%3C/text%3E%3C/svg%3E";
 
     async function loadSystemInfo() {
+        if (formContent && formSkeleton) {
+            formContent.classList.add('hidden');
+            formSkeleton.classList.remove('hidden');
+        }
+
         try {
             const data = await getSystemInfo();
             existingSystemInfo = data;
@@ -211,6 +285,11 @@ export function initSystemInfo() {
             }
         } catch (error) {
             console.log('No existing system info found');
+        } finally {
+            if (formContent && formSkeleton) {
+                formContent.classList.remove('hidden');
+                formSkeleton.classList.add('hidden');
+            }
         }
     }
 
