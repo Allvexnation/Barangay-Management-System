@@ -215,7 +215,7 @@ function buildRecentActivityRows(auditLogs) {
         window.auditLogsData[index] = log;
 
         return `
-            <tr class="hover:bg-gray-50 cursor-pointer" onclick="showAuditLogDetails(${index})">
+            <tr class="cursor-pointer" onclick="showAuditLogDetails(${index})" style="transition: background-color 0.2s;" onmouseover="this.style.backgroundColor = document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.1)'" onmouseout="this.style.backgroundColor = ''">
                 <td class="px-5 py-3 text-gray-700">
                     <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">${displayEntityType}</span>
                 </td>

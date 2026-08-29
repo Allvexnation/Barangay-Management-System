@@ -46,6 +46,12 @@
     --color-dark-gray-solid-2: #242424;
     --color-dark-gray-solid-3: #1f2937;
     --color-blue-dark-solid: #1e40af;
+    --color-shadow-dark: rgba(0, 0, 0, 0.5);
+    --color-white-transparent-02: rgba(255, 255, 255, 0.02);
+    --color-black-transparent-85: rgba(0, 0, 0, 0.85);
+    --color-black-transparent-0: rgba(0, 0, 0, 0);
+    --color-dark-gray-transparent-1: rgba(36, 36, 36, 0.1);
+    --color-black-transparent-1: rgba(0, 0, 0, 0.1);
 }
 
 .glass-effect {
@@ -73,6 +79,7 @@ html.dark button.text-gray-700.bg-white:hover {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -110,6 +117,7 @@ html.dark button.text-gray-700.bg-white:hover {
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -371,11 +379,11 @@ html:not(.dark) nav.bg-blue-900 #mobileMenuBtn:hover {
     background-color: var(--color-blue-standard) !important;
 }
 
-html.dark .divide-gray-100 > * + * {
+html.dark .divide-gray-100>*+* {
     border-color: var(--color-transparent) !important;
 }
 
-html.dark .divide-y > * + * {
+html.dark .divide-y>*+* {
     border-color: var(--color-transparent) !important;
 }
 
@@ -384,7 +392,7 @@ html.dark .sticky {
 }
 
 html.dark .shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 10px 15px -3px var(--color-shadow-dark) !important;
 }
 
 html.dark .rounded-lg {
@@ -405,6 +413,70 @@ html.dark tbody {
 
 html.dark tr {
     background-color: var(--color-dark-bg) !important;
+}
+
+html.dark .overflow-x-auto table tbody#recent-activity-table-body tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#recent-activity-table-body tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#householdTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#householdTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#officialsTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#officialsTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#clearanceTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#clearanceTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#complaintsTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#complaintsTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#usersTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#usersTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#positionTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#positionTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#purokTableBody tr:hover {
+    background-color: var(--color-white-transparent-02) !important;
+}
+
+html.dark .overflow-x-auto table tbody#purokTableBody tr:hover td {
+    background-color: var(--color-white-transparent-02) !important;
 }
 
 html.dark td {
@@ -592,6 +664,10 @@ html.dark #settings-dropdown-menu a:hover * {
     transform: none !important;
 }
 
+#togglePassword:hover {
+    transform: translateY(-50%) !important;
+}
+
 html.dark .modal-header h3,
 html.dark .modal-header h2,
 html.dark .modal-header h1 {
@@ -735,7 +811,7 @@ html.dark .min-h-screen[style*="background-image"]::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--color-black-transparent-85);
     pointer-events: none;
     z-index: 0;
     transition: background 0.5s ease-in-out;
@@ -748,13 +824,13 @@ html.dark .min-h-screen[style*="background-image"]::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0);
+    background: var(--color-black-transparent-0);
     pointer-events: none;
     z-index: 0;
     transition: background 0.5s ease-in-out;
 }
 
-html.dark .min-h-screen[style*="background-image"] > * {
+html.dark .min-h-screen[style*="background-image"]>* {
     position: relative;
     z-index: 1;
 }
@@ -831,11 +907,11 @@ html.dark button.group:hover svg {
 }
 
 html.dark #modal-content .bg-gray-50.rounded-lg {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
 }
 
 html.dark [class*="bg-gray-50"].rounded-lg {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
 }
 
 html.dark [class*="bg-gray-50"].rounded-lg svg {
@@ -843,7 +919,7 @@ html.dark [class*="bg-gray-50"].rounded-lg svg {
 }
 
 html.dark .bg-blue-50.rounded-lg.border.border-gray-100 {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
     border: none !important;
 }
 
@@ -852,7 +928,7 @@ html.dark .bg-blue-50.rounded-lg.border.border-gray-100 .text-blue-800 {
 }
 
 html.dark .bg-green-50.rounded-lg.border.border-gray-100 {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
     border: none !important;
 }
 
@@ -861,7 +937,7 @@ html.dark .bg-green-50.rounded-lg.border.border-gray-100 .text-green-800 {
 }
 
 html.dark .bg-yellow-50.rounded-lg.border.border-gray-100 {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
     border: none !important;
 }
 
@@ -870,5 +946,9 @@ html.dark .bg-yellow-50.rounded-lg.border.border-gray-100 .text-yellow-800 {
 }
 
 html.dark #modal-content .max-h-48.overflow-y-auto {
-    background-color: rgba(36, 36, 36, 0.1) !important;
+    background-color: var(--color-dark-gray-transparent-1) !important;
+}
+
+table tbody#recent-activity-table-body tr:hover {
+    background-color: var(--color-black-transparent-1) !important;
 }

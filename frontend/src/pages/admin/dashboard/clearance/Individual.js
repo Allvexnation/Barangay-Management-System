@@ -89,7 +89,7 @@ function renderIndividualTable() {
         });
 
         return `
-        <tr class="hover:bg-gray-50 transition-colors cursor-pointer" onclick="viewIndividualClearance('${clearance.id}')">
+        <tr class="cursor-pointer" onclick="viewIndividualClearance('${clearance.id}')" style="transition: background-color 0.2s;" onmouseover="this.style.backgroundColor = document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.1)'" onmouseout="this.style.backgroundColor = ''">
             <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-xs text-gray-400 text-center font-mono">
                 ${index + 1}
             </td>

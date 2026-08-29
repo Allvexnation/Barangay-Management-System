@@ -139,24 +139,34 @@ export function EditProfilePage() {
                                         <label for="settingsOldPassword" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
                                             Current (Old) Password
                                         </label>
-                                        <input 
-                                            type="password" 
-                                            name="old_password" 
-                                            id="settingsOldPassword" 
-                                            placeholder="Enter current password to verify"
-                                            class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                                        <div class="relative">
+                                            <input 
+                                                type="password" 
+                                                name="old_password" 
+                                                id="settingsOldPassword" 
+                                                placeholder="Enter current password to verify"
+                                                class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition pr-10">
+                                            <button type="button" onclick="togglePassword('settingsOldPassword')" class="absolute right-2 top-0 bottom-0 flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none px-2">
+                                                <i data-lucide="eye" id="settingsOldPassword-eye-icon" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div>
                                         <label for="settingsPassword" class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1.5">
                                             New Password
                                         </label>
-                                        <input 
-                                            type="password" 
-                                            name="password" 
-                                            id="settingsPassword" 
-                                            placeholder="Minimum 6 characters"
-                                            class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                                        <div class="relative">
+                                            <input 
+                                                type="password" 
+                                                name="password" 
+                                                id="settingsPassword" 
+                                                placeholder="Minimum 6 characters"
+                                                class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition pr-10">
+                                            <button type="button" onclick="togglePassword('settingsPassword')" class="absolute right-2 top-0 bottom-0 flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none px-2">
+                                                <i data-lucide="eye" id="settingsPassword-eye-icon" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -339,3 +349,23 @@ export function getSettingsModalHTML() {
 
 export function initSettingsModal() {
 }
+
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const eyeIcon = document.getElementById(`${inputId}-eye-icon`);
+    
+    if (passwordInput && eyeIcon) {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.setAttribute('data-lucide', 'eye');
+        }
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+}
+
+window.togglePassword = togglePassword;
