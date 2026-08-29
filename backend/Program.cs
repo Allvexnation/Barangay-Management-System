@@ -82,7 +82,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Disable HTTPS redirection in production container to avoid port binding issues
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
