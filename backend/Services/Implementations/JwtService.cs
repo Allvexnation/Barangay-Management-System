@@ -19,9 +19,14 @@ public class JwtService : IJwtService
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var secretKey = jwtSettings["SecretKey"] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
-        var issuer = jwtSettings["Issuer"] ?? Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "sti-makati-backend";
-        var audience = jwtSettings["Audience"] ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "sti-makati-frontend";
-        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? Environment.GetEnvironmentVariable("JWT_EXPIRATION_MINUTES") ?? "60");
+        var issuer = jwtSettings["Issuer"] ?? Environment.GetEnvironmentVariable("JWT_ISSUER");
+        var audience = jwtSettings["Audience"] ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? Environment.GetEnvironmentVariable("JWT_EXPIRATION_MINUTES"));
+
+        if (string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience))
+        {
+            throw new Exception("JWT configuration is missing. Please set JWT_SECRET_KEY, JWT_ISSUER, and JWT_AUDIENCE environment variables.");
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

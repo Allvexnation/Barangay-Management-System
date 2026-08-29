@@ -10,13 +10,13 @@ public class CloudinaryService : ICloudinaryService
 
     public CloudinaryService(IConfiguration configuration)
     {
-        var cloudName = configuration["Cloudinary:CloudName"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME") ?? "your-cloud-name";
-        var apiKey = configuration["Cloudinary:ApiKey"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY") ?? "your-api-key";
-        var apiSecret = configuration["Cloudinary:ApiSecret"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET") ?? "your-api-secret";
+        var cloudName = configuration["Cloudinary:CloudName"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME");
+        var apiKey = configuration["Cloudinary:ApiKey"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY");
+        var apiSecret = configuration["Cloudinary:ApiSecret"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET");
 
-        if (cloudName == "your-cloud-name" || apiKey == "your-api-key" || apiSecret == "your-api-secret")
+        if (string.IsNullOrEmpty(cloudName) || string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret))
         {
-            throw new Exception("Cloudinary credentials are not configured properly");
+            throw new Exception("Cloudinary credentials are not configured properly. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.");
         }
 
         var account = new Account(cloudName, apiKey, apiSecret);

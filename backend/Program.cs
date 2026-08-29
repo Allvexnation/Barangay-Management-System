@@ -9,7 +9,22 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.FileProviders;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = Directory.GetCurrentDirectory()
+});
+
+// Disable file watching in production to avoid inotify limit issues
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    if (context.HostingEnvironment.IsProduction())
+    {
+        config.Sources.Clear();
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+        config.AddEnvironmentVariables();
+    }
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -25,8 +40,8 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
-var issuer = jwtSettings["Issuer"] ?? Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "barangay-pio-del-pilar-backend";
-var audience = jwtSettings["Audience"] ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "barangay-pio-del-pilar-frontend";
+var issuer = jwtSettings["Issuer"] ?? Environment.GetEnvironmentVariable("JWT_ISSUER");
+var audience = jwtSettings["Audience"] ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
 builder.Services.AddAuthentication(options =>
 {
