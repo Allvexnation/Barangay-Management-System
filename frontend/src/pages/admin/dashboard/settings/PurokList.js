@@ -62,7 +62,24 @@ export function PurokList() {
                                 </tr>
                             </thead>
                             <tbody id="purokTableBody" class="divide-y divide-gray-100">
-                                ${skeletonTableRows(3, 5)}
+                                ${(function() {
+                                    const rows = 3;
+                                    const cols = 3;
+                                    let skeletonHTML = '';
+                                    for (let i = 0; i < rows; i++) {
+                                        let cells = '';
+                                        for (let j = 0; j < cols; j++) {
+                                            const width = j === 0 ? 'w-16' : j === cols - 1 ? 'w-16' : 'w-full';
+                                            cells += `
+                                                <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                                                    <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                                                </td>
+                                            `;
+                                        }
+                                        skeletonHTML += `<tr>${cells}</tr>`;
+                                    }
+                                    return skeletonHTML;
+                                })()}
                             </tbody>
                         </table>
                     </div>
@@ -82,7 +99,22 @@ export function initPurokList() {
 async function loadPuroks() {
     const tbody = document.getElementById('purokTableBody');
     if (tbody) {
-        tbody.innerHTML = skeletonTableRows(3, 5);
+        const rows = 3;
+        const cols = 3;
+        let skeletonHTML = '';
+        for (let i = 0; i < rows; i++) {
+            let cells = '';
+            for (let j = 0; j < cols; j++) {
+                const width = j === 0 ? 'w-16' : j === cols - 1 ? 'w-16' : 'w-full';
+                cells += `
+                    <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                        <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                    </td>
+                `;
+            }
+            skeletonHTML += `<tr>${cells}</tr>`;
+        }
+        tbody.innerHTML = skeletonHTML;
     }
 
     try {
@@ -127,13 +159,13 @@ function renderPurokList() {
     tbody.innerHTML = puroks.map((purok, index) => {
         return `
         <tr class="hover:bg-gray-50 transition-colors">
-            <td class="px-5 py-3.5 text-xs text-gray-400 text-center font-mono">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-xs text-gray-400 text-center font-mono">
                 ${index + 1}
             </td>
-            <td class="px-5 py-3.5">
-                <p class="text-sm font-semibold text-gray-900">${purok.purokName || purok.name}</p>
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                <p class="text-xs sm:text-sm font-semibold text-gray-900">${purok.purokName || purok.name}</p>
             </td>
-            <td class="px-5 py-3.5 text-center">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-center">
                 ${CrudMenu({ 
                     id: purok.id, 
                     onView: 'viewPurok',

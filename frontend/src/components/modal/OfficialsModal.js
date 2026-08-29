@@ -34,14 +34,14 @@ export function openOfficialsModal({ mode = 'add', official = null, positions = 
             <fieldset>
                 <legend class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Photo</legend>
                 <div class="space-y-3">
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                         <div id="imagePreviewContainer" class="flex-shrink-0 w-20 h-20 rounded-lg bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
                             ${existingImageUrl
                                 ? `<img src="${existingImageUrl}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`
                                 : `<i data-lucide="user" class="w-8 h-8 text-gray-400" id="imagePreviewIcon"></i>`
                             }
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 w-full">
                             <label for="imageUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload Photo</label>
                             <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                                 class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 transition">
@@ -52,10 +52,8 @@ export function openOfficialsModal({ mode = 'add', official = null, positions = 
                 </div>
             </fieldset>
 
-            <hr class="border-gray-100">
-
-            <fieldset>
-                <legend class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Personal Information</legend>
+            <div class="border-b border-gray-200 pb-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Personal Information</h4>
                 <div class="space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -84,12 +82,10 @@ export function openOfficialsModal({ mode = 'add', official = null, positions = 
                             class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     </div>
                 </div>
-            </fieldset>
+            </div>
 
-            <hr class="border-gray-100">
-
-            <fieldset>
-                <legend class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Position & Role</legend>
+            <div class="border-b border-gray-200 pb-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Position & Role</h4>
                 <div>
                     <label for="positionId" class="block text-sm font-medium text-gray-700 mb-1">Official Position <span class="text-red-500">*</span></label>
                     <select id="positionId" name="positionId" required
@@ -98,11 +94,11 @@ export function openOfficialsModal({ mode = 'add', official = null, positions = 
                         ${positionOptions}
                     </select>
                 </div>
-            </fieldset>
+            </div>
 
             <div id="formError" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2"></div>
 
-            <div class="flex justify-end gap-2 pt-3 border-t border-gray-100">
+            <div class="flex justify-end pt-3 border-t border-gray-100 flex-row gap-2">
                 <button 
                     type="button" 
                     onclick="closeOfficialsModal()" 
@@ -307,10 +303,12 @@ export async function openViewOfficialsModal(official) {
                 } else if (log.changes) {
                     detailsHtml = Object.entries(log.changes).map(([field, change]) => `
                         <div class="text-xs text-gray-600 mt-1">
-                            <span class="font-medium text-gray-700">${field}:</span>
-                            <span class="text-red-600">${change.oldValue || '—'}</span>
-                            →
-                            <span class="text-green-600">${change.newValue || '—'}</span>
+                            <span class="font-medium text-gray-700 block">${field}:</span>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span class="text-red-600">${change.oldValue || '—'}</span>
+                                <span class="hidden sm:inline">→</span>
+                                <span class="text-green-600">${change.newValue || '—'}</span>
+                            </div>
                         </div>
                     `).join('');
                 }
@@ -324,12 +322,12 @@ export async function openViewOfficialsModal(official) {
 
                 return `
                     <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                             <div>
                                 <span class="text-sm font-medium text-gray-900">${log.adminName || log.adminEmail || 'Unknown Admin'}</span>
                                 <span class="text-xs text-gray-400 ml-2">${timestamp}</span>
                             </div>
-                            <span class="text-xs px-2 py-0.5 rounded-full ${badgeClass}">
+                            <span class="text-xs px-2 py-0.5 rounded-full ${badgeClass} self-start">
                                 ${log.action}
                             </span>
                         </div>
@@ -345,14 +343,14 @@ export async function openViewOfficialsModal(official) {
 
     const content = `
         <div class="space-y-5">
-            <div class="flex items-center gap-4 bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <div class="flex-shrink-0 w-32 h-32 rounded-lg bg-blue-900 text-blue-100 flex items-center justify-center text-sm font-bold shadow-sm overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div class="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg bg-blue-900 text-blue-100 flex items-center justify-center text-sm font-bold shadow-sm overflow-hidden mx-auto sm:mx-0">
                     ${hasImage 
                         ? `<img src="${official.imageUrl}" alt="${official.fullName}" class="w-full h-full object-cover">` 
                         : initials
                     }
                 </div>
-                <div>
+                <div class="text-center sm:text-left">
                     <h3 class="text-lg font-semibold text-gray-900">${official.fullName}</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 mt-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-900 border border-blue-200">
                         ${official.position || 'Appointed Official'}
@@ -360,9 +358,9 @@ export async function openViewOfficialsModal(official) {
                 </div>
             </div>
 
-            <div>
+            <div class="border-b border-gray-200 pb-4">
                 <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Personal Information</h4>
-                <dl class="grid grid-cols-2 gap-x-6 gap-y-3">
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                     ${detailItem('First Name', official.firstName)}
                     ${detailItem('Last Name', official.lastName)}
                     ${detailItem('Middle Name', official.middleName || '—')}
@@ -370,17 +368,13 @@ export async function openViewOfficialsModal(official) {
                 </dl>
             </div>
 
-            <hr class="border-gray-100">
-
-            <div>
+            <div class="border-b border-gray-200 pb-4">
                 <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Appointment Record</h4>
-                <dl class="grid grid-cols-2 gap-x-6 gap-y-3">
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                     ${detailItem('Designation', official.position || '—')}
                     ${detailItem('Date Appointed', dateAppointed)}
                 </dl>
             </div>
-
-            <hr class="border-gray-100">
 
             <div>
                 <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Audit History</h4>
@@ -389,7 +383,7 @@ export async function openViewOfficialsModal(official) {
                 </div>
             </div>
 
-            <div class="flex justify-end pt-3 border-t border-gray-100">
+            <div class="flex justify-end pt-3 border-t border-gray-100 flex-col sm:flex-row gap-2">
                 <button 
                     type="button" 
                     onclick="closeOfficialsModal()" 

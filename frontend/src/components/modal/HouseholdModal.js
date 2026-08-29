@@ -97,7 +97,7 @@ export function openHouseholdModal({ mode = 'add', household = null, puroks = []
 
             <div id="formError" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2"></div>
 
-            <div class="flex justify-end pt-3 border-t border-gray-100 flex-col sm:flex-row gap-2">
+            <div class="flex justify-end pt-3 border-t border-gray-100 flex-row gap-2">
                 <button 
                     type="button" 
                     onclick="closeHouseholdModal()" 

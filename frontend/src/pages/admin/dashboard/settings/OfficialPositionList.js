@@ -58,12 +58,12 @@ export function OfficialPositionList() {
                                 <tr class="bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     <th class="px-5 py-3.5 w-12 text-center">#</th>
                                     <th class="px-5 py-3.5">Position Name</th>
-                                    <th class="px-5 py-3.5">Signatory</th>
+                                    <th class="px-5 py-3.5 hidden sm:table-cell">Signatory</th>
                                     <th class="px-5 py-3.5 text-center w-28">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="positionTableBody" class="divide-y divide-gray-100">
-                                ${skeletonTableRows(4, 5)}
+                                ${skeletonTableRows(window.innerWidth < 640 ? 3 : 4, window.innerWidth < 640 ? 3 : 4)}
                             </tbody>
                         </table>
                     </div>
@@ -83,7 +83,22 @@ export function initOfficialPositionList() {
 async function loadPositions() {
     const tbody = document.getElementById('positionTableBody');
     if (tbody) {
-        tbody.innerHTML = skeletonTableRows(4, 5);
+        const rows = window.innerWidth < 640 ? 3 : 4;
+        const cols = window.innerWidth < 640 ? 3 : 4;
+        let skeletonHTML = '';
+        for (let i = 0; i < rows; i++) {
+            let cells = '';
+            for (let j = 0; j < cols; j++) {
+                const width = j === 0 ? 'w-16' : j === cols - 1 ? 'w-16' : 'w-full';
+                cells += `
+                    <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                        <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                    </td>
+                `;
+            }
+            skeletonHTML += `<tr>${cells}</tr>`;
+        }
+        tbody.innerHTML = skeletonHTML;
     }
 
     try {
@@ -128,16 +143,16 @@ function renderPositionList() {
     tbody.innerHTML = positions.map((position, index) => {
         return `
         <tr class="hover:bg-gray-50 transition-colors">
-            <td class="px-5 py-3.5 text-xs text-gray-400 text-center font-mono">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-xs text-gray-400 text-center font-mono">
                 ${index + 1}
             </td>
-            <td class="px-5 py-3.5">
-                <p class="text-sm font-semibold text-gray-900">${position.positionName}</p>
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                <p class="text-xs sm:text-sm font-semibold text-gray-900">${position.positionName}</p>
             </td>
-            <td class="px-5 py-3.5">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 hidden sm:table-cell">
                 ${position.isApprover ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-emerald-50 text-emerald-800 border-emerald-200">Yes</span>' : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-gray-50 text-gray-700 border-gray-200">No</span>'}
             </td>
-            <td class="px-5 py-3.5 text-center">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-center">
                 ${CrudMenu({ 
                     id: position.id, 
                     onView: 'viewPosition',

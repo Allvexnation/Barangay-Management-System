@@ -84,7 +84,24 @@ export function renderDashboardPage() {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100" id="recent-activity-table-body">
-                                ${skeletonTableRows(5, 5)}
+                                ${(function() {
+                                    const rows = 5;
+                                    const cols = window.innerWidth < 640 ? 3 : 5;
+                                    let skeletonHTML = '';
+                                    for (let i = 0; i < rows; i++) {
+                                        let cells = '';
+                                        for (let j = 0; j < cols; j++) {
+                                            const width = j === 0 ? 'w-20' : j === cols - 1 ? 'w-20' : 'w-full';
+                                            cells += `
+                                                <td class="px-5 py-3">
+                                                    <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                                                </td>
+                                            `;
+                                        }
+                                        skeletonHTML += `<tr>${cells}</tr>`;
+                                    }
+                                    return skeletonHTML;
+                                })()}
                             </tbody>
                         </table>
                     </div>
@@ -243,7 +260,22 @@ async function loadRecentActivity(page) {
     const tableBody = document.getElementById('recent-activity-table-body');
     if (!tableBody) return;
 
-    tableBody.innerHTML = skeletonTableRows(5, 5);
+    const rows = 5;
+    const cols = window.innerWidth < 640 ? 3 : 5;
+    let skeletonHTML = '';
+    for (let i = 0; i < rows; i++) {
+        let cells = '';
+        for (let j = 0; j < cols; j++) {
+            const width = j === 0 ? 'w-20' : j === cols - 1 ? 'w-20' : 'w-full';
+            cells += `
+                <td class="px-5 py-3">
+                    <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                </td>
+            `;
+        }
+        skeletonHTML += `<tr>${cells}</tr>`;
+    }
+    tableBody.innerHTML = skeletonHTML;
 
     try {
         const response = await getRecentAuditLogs(page, pageSize);

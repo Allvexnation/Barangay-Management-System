@@ -123,7 +123,7 @@ export function renderClearancePage() {
                                 </tr>
                             </thead>
                             <tbody id="clearanceTableBody" class="divide-y divide-gray-100">
-                                ${skeletonTableRows(7, 7)}
+                                ${skeletonTableRows(window.innerWidth < 640 ? 3 : 7, window.innerWidth < 640 ? 3 : 7)}
                             </tbody>
                         </table>
                     </div>

@@ -30,10 +30,8 @@ function getFormHTML(complaint = null) {
                 </div>
             </fieldset>
 
-            <hr class="border-gray-100">
-
-            <fieldset>
-                <legend class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Case Information</legend>
+            <div class="border-b border-gray-200 pb-4">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Case Information</h4>
                 <div class="space-y-3">
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Case Status <span class="text-red-500">*</span></label>
@@ -53,11 +51,9 @@ function getFormHTML(complaint = null) {
                             class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none">${isEdit ? (complaint.description || '') : ''}</textarea>
                     </div>
                 </div>
-            </fieldset>
+            </div>
 
-            <div id="formError" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2"></div>
-
-            <div class="flex justify-end gap-2 pt-3 border-t border-gray-100">
+            <div class="flex justify-end pt-3 border-t border-gray-100 flex-row gap-2">
                 <button 
                     type="button" 
                     onclick="closeComplaintModal()" 
@@ -197,10 +193,12 @@ export async function openViewComplaintModal(id) {
                     } else if (log.changes) {
                         detailsHtml = Object.entries(log.changes).map(([field, change]) => `
                             <div class="text-xs text-gray-600 mt-1">
-                                <span class="font-medium text-gray-700">${field}:</span>
-                                <span class="text-red-600">${change.oldValue || '—'}</span>
-                                →
-                                <span class="text-green-600">${change.newValue || '—'}</span>
+                                <span class="font-medium text-gray-700 block">${field}:</span>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                    <span class="text-red-600">${change.oldValue || '—'}</span>
+                                    <span class="hidden sm:inline">→</span>
+                                    <span class="text-green-600">${change.newValue || '—'}</span>
+                                </div>
                             </div>
                         `).join('');
                     }
@@ -214,12 +212,12 @@ export async function openViewComplaintModal(id) {
 
                     return `
                         <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                                 <div>
                                     <span class="text-sm font-medium text-gray-900">${log.adminName || log.adminEmail || 'Unknown Admin'}</span>
                                     <span class="text-xs text-gray-400 ml-2">${timestamp}</span>
                                 </div>
-                                <span class="text-xs px-2 py-0.5 rounded-full ${badgeClass}">
+                                <span class="text-xs px-2 py-0.5 rounded-full ${badgeClass} self-start">
                                     ${log.action}
                                 </span>
                             </div>
@@ -247,9 +245,11 @@ export async function openViewComplaintModal(id) {
                     </div>
                 </div>
 
+                <hr class="border-gray-200">
+
                 <div>
                     <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Case Information</h4>
-                    <dl class="grid grid-cols-2 gap-x-6 gap-y-3">
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <dt class="text-xs text-gray-400 font-medium">Complainant:</dt>
                             <dd class="text-sm font-semibold text-gray-900 mt-0.5">${complaint.complainantName}</dd>
@@ -269,16 +269,12 @@ export async function openViewComplaintModal(id) {
                     </dl>
                 </div>
 
-                <hr class="border-gray-100">
-
-                <div>
-                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Statement & Narrative</h4>
-                    <div class="bg-gray-50/70 border border-gray-200/80 rounded-md p-4 text-sm text-gray-800 leading-relaxed">
+                <div class="border-b border-gray-200 pb-4">
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Statement & Narrative</h4>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 text-sm text-gray-800 leading-relaxed">
                         ${complaint.description}
                     </div>
                 </div>
-
-                <hr class="border-gray-100">
 
                 <div>
                     <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Audit History</h4>
@@ -287,7 +283,7 @@ export async function openViewComplaintModal(id) {
                     </div>
                 </div>
 
-                <div class="flex justify-end pt-3 border-t border-gray-100">
+                <div class="flex justify-end pt-3 border-t border-gray-100 flex-col sm:flex-row gap-2">
                     <button 
                         type="button" 
                         onclick="closeComplaintModal()" 

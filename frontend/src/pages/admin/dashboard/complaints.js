@@ -122,7 +122,24 @@ export function renderComplaintsPage() {
                                 </tr>
                             </thead>
                             <tbody id="complaintsTableBody" class="divide-y divide-gray-100">
-                                ${skeletonTableRows(7, 7)}
+                                ${(function() {
+                                    const rows = window.innerWidth < 640 ? 3 : 7;
+                                    const cols = window.innerWidth < 640 ? 3 : 7;
+                                    let skeletonHTML = '';
+                                    for (let i = 0; i < rows; i++) {
+                                        let cells = '';
+                                        for (let j = 0; j < cols; j++) {
+                                            const width = j === 0 ? 'w-16' : j === cols - 1 ? 'w-16' : 'w-full';
+                                            cells += `
+                                                <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                                                    <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                                                </td>
+                                            `;
+                                        }
+                                        skeletonHTML += `<tr>${cells}</tr>`;
+                                    }
+                                    return skeletonHTML;
+                                })()}
                             </tbody>
                         </table>
                     </div>
@@ -165,7 +182,22 @@ export function initComplaintsPage() {
 async function loadComplaints() {
     const tbody = document.getElementById('complaintsTableBody');
     if (tbody) {
-        tbody.innerHTML = skeletonTableRows(7, 7);
+        const rows = window.innerWidth < 640 ? 3 : 7;
+        const cols = window.innerWidth < 640 ? 3 : 7;
+        let skeletonHTML = '';
+        for (let i = 0; i < rows; i++) {
+            let cells = '';
+            for (let j = 0; j < cols; j++) {
+                const width = j === 0 ? 'w-16' : j === cols - 1 ? 'w-16' : 'w-full';
+                cells += `
+                    <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                        <div class="h-3 ${width} bg-gray-200 rounded animate-pulse"></div>
+                    </td>
+                `;
+            }
+            skeletonHTML += `<tr>${cells}</tr>`;
+        }
+        tbody.innerHTML = skeletonHTML;
     }
 
     try {
@@ -264,12 +296,12 @@ function renderComplaintsTable() {
 
         return `
         <tr class="hover:bg-gray-50 transition-colors cursor-pointer" onclick="viewComplaint('${complaint.complaintId}')">
-            <td class="px-5 py-3.5 text-xs text-gray-400 text-center font-mono">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-xs text-gray-400 text-center font-mono">
                 ${index + 1}
             </td>
 
-            <td class="px-5 py-3.5">
-                <p class="text-sm font-semibold text-gray-900">${complaint.complainantName}</p>
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5">
+                <p class="text-xs sm:text-sm font-semibold text-gray-900">${complaint.complainantName}</p>
             </td>
 
             <td class="px-5 py-3.5 text-sm text-gray-700 hidden sm:table-cell">
@@ -288,7 +320,7 @@ function renderComplaintsTable() {
                 ${dateFiled}
             </td>
 
-            <td class="px-5 py-3.5 text-center" onclick="event.stopPropagation()">
+            <td class="px-3 sm:px-5 py-2 sm:py-3.5 text-center" onclick="event.stopPropagation()">
                 ${CrudMenu({ 
                     id: complaint.complaintId, 
                     onView: 'viewComplaint', 

@@ -80,7 +80,7 @@ export function showAuditLogDetails(index) {
         detailsContent += `
             <div class="mb-4">
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">Changes</h4>
-                <div class="bg-blue-50 rounded p-3">
+                <div class="bg-blue-50 rounded-lg p-3 border border-gray-100">
                     ${Object.entries(log.changes).map(([key, value]) => {
                         return `
                             <div class="mb-2 last:mb-0">
@@ -98,7 +98,7 @@ export function showAuditLogDetails(index) {
         detailsContent += `
             <div class="mb-4">
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">New Values</h4>
-                <div class="bg-green-50 rounded p-3">
+                <div class="bg-green-50 rounded-lg p-3 border border-gray-100">
                     ${Object.entries(log.newValues).map(([key, value]) => {
                         if (typeof value === 'object' && (value.oldValue !== undefined || value.newValue !== undefined)) {
                             const oldVal = value.oldValue !== undefined ? formatValue(value.oldValue) : 'N/A';
@@ -132,7 +132,7 @@ export function showAuditLogDetails(index) {
         detailsContent += `
             <div class="mb-4">
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">Previous Values</h4>
-                <div class="bg-yellow-50 rounded p-3">
+                <div class="bg-yellow-50 rounded-lg p-3 border border-gray-100">
                     ${Object.entries(log.previousValues).map(([key, value]) => {
                         if (typeof value === 'object' && (value.oldValue !== undefined || value.newValue !== undefined)) {
                             const oldVal = value.oldValue !== undefined ? formatValue(value.oldValue) : 'N/A';
