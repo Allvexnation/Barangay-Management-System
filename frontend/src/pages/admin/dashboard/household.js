@@ -127,9 +127,9 @@ export function renderHouseholdPage() {
     `;
 }
 
-export function initHouseholdPage() {
+export async function initHouseholdPage() {
     initAdminNavbar();
-    loadPuroks();
+    await loadPuroks();
     loadHouseholds();
 
     initHouseholdAnimations();

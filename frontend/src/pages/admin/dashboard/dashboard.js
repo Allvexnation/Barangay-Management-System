@@ -79,8 +79,8 @@ export function renderDashboardPage() {
                                     <th class="px-5 py-3">Entity</th>
                                     <th class="px-5 py-3">Action</th>
                                     <th class="px-5 py-3">Details</th>
-                                    <th class="px-5 py-3">User</th>
-                                    <th class="px-5 py-3 text-right">Date</th>
+                                    <th class="px-5 py-3 hidden sm:table-cell">User</th>
+                                    <th class="px-5 py-3 text-right hidden sm:table-cell">Date</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100" id="recent-activity-table-body">
@@ -98,7 +98,7 @@ function buildRecentActivityRows(auditLogs) {
     if (!auditLogs || auditLogs.length === 0) {
         return `
             <tr>
-                <td class="px-5 py-3 text-gray-500 text-center" colspan="5">
+                <td class="px-5 py-3 text-gray-500 text-center" colspan="3">
                     No recent activity found.
                 </td>
             </tr>
@@ -208,13 +208,13 @@ function buildRecentActivityRows(auditLogs) {
                 <td class="px-5 py-3 text-gray-600">
                     ${hasDetails ? '<span class="text-blue-600 text-xs hover:underline">View details</span>' : '<span class="text-gray-400 text-xs">No details</span>'}
                 </td>
-                <td class="px-5 py-3 text-gray-600 text-xs">
+                <td class="px-5 py-3 text-gray-600 text-xs hidden sm:table-cell">
                     <div class="flex flex-col">
                         <span class="font-medium text-gray-900">${log.adminName || 'Unknown'}</span>
                         <span class="text-gray-400">${log.role || log.adminRole || 'N/A'}</span>
                     </div>
                 </td>
-                <td class="px-5 py-3 text-right text-gray-500 text-xs">${timestamp}</td>
+                <td class="px-5 py-3 text-right text-gray-500 text-xs hidden sm:table-cell">${timestamp}</td>
             </tr>
         `;
     }).join('');
@@ -264,7 +264,7 @@ async function loadRecentActivity(page) {
         console.error('Error loading recent activity:', error);
         tableBody.innerHTML = `
             <tr>
-                <td class="px-5 py-3 text-gray-500 text-center" colspan="5">
+                <td class="px-5 py-3 text-gray-500 text-center" colspan="3">
                     Unable to load data. Please try again later.
                 </td>
             </tr>
@@ -391,7 +391,7 @@ export async function initAdminDashboardPage() {
         if (tableBody) {
             tableBody.innerHTML = `
                 <tr>
-                    <td class="px-5 py-3 text-gray-500 text-center" colspan="5">
+                    <td class="px-5 py-3 text-gray-500 text-center" colspan="3">
                         Unable to load data. Please try again later.
                     </td>
                 </tr>
