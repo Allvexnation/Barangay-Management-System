@@ -825,3 +825,19 @@ html.dark button.group:hover {
 html.dark button.group:hover svg {
     stroke: var(--color-black) !important;
 }
+
+html.dark #modal-content .bg-gray-50.rounded-lg {
+    background-color: rgba(36, 36, 36, 0.1) !important;
+}
+
+html.dark [class*="bg-gray-50"].rounded-lg {
+    background-color: rgba(36, 36, 36, 0.1) !important;
+}
+
+html.dark [class*="bg-gray-50"].rounded-lg svg {
+    stroke: var(--color-white) !important;
+}
+
+html.dark #modal-content .max-h-48.overflow-y-auto {
+    background-color: rgba(36, 36, 36, 0.1) !important;
+}
