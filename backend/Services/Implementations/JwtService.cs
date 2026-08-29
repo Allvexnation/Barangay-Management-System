@@ -18,10 +18,10 @@ public class JwtService : IJwtService
     public string GenerateToken(string userId, string email, string? firstName = null, string? lastName = null, string? username = null, string? role = null)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings["SecretKey"];
-        var issuer = jwtSettings["Issuer"];
-        var audience = jwtSettings["Audience"];
-        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");
+        var secretKey = jwtSettings["SecretKey"] ?? Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+        var issuer = jwtSettings["Issuer"] ?? Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "sti-makati-backend";
+        var audience = jwtSettings["Audience"] ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "sti-makati-frontend";
+        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? Environment.GetEnvironmentVariable("JWT_EXPIRATION_MINUTES") ?? "60");
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
