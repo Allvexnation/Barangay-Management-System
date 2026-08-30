@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
                 "https://barangaypiodelpilarmakati.netlify.app",
                 "https://barangaypiodelpilarmakati.vercel.app",
                 "http://127.0.0.2:5500",
-                "https://broad-foreign-iron-lou.trycloudflare.com"
+                "https://mlb-goes-edt-beverage.trycloudflare.com"
             )
               .AllowAnyMethod()
               .AllowAnyHeader()
