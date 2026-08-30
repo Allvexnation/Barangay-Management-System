@@ -1,5 +1,5 @@
 import { AdminStripBar } from './stripbar.js';
-import { getUser, logout } from '../../api/admin/auth/login.js';
+import { getUser, logout, fetchCurrentUser } from '../../api/admin/auth/login.js';
 import { getSystemInfo } from '../../api/admin/dashboard/settings/Systeminfo.js';
 import { clearToken } from '../../api/token.js';
 import { getSettingsModalHTML, initSettingsModal } from '../../pages/admin/dashboard/settings/EditProfile.js';
@@ -250,7 +250,40 @@ export function initAdminNavbar() {
         }
     }
 
+    async function loadLatestUserData() {
+        try {
+            const latestUser = await fetchCurrentUser();
+            
+            const navProfilePhoto = document.getElementById('navProfilePhoto');
+            const mobileNavProfilePhoto = document.getElementById('mobileNavProfilePhoto');
+            
+            if (navProfilePhoto && latestUser.ProfilePhoto) {
+                navProfilePhoto.src = latestUser.ProfilePhoto;
+            }
+            
+            if (mobileNavProfilePhoto && latestUser.ProfilePhoto) {
+                mobileNavProfilePhoto.src = latestUser.ProfilePhoto;
+            }
+            
+            const navUsername = document.getElementById('navUsername');
+            const mobileNavUsername = document.getElementById('mobileNavUsername');
+            
+            if (navUsername) {
+                const fullName = `${latestUser.FirstName || ''} ${latestUser.LastName || ''}`.trim() || latestUser.Username || 'User';
+                navUsername.textContent = `Welcome, ${fullName}`;
+            }
+            
+            if (mobileNavUsername) {
+                const fullName = `${latestUser.FirstName || ''} ${latestUser.LastName || ''}`.trim() || latestUser.Username || 'User';
+                mobileNavUsername.textContent = `Welcome, ${fullName}`;
+            }
+        } catch (error) {
+            console.error('Failed to load latest user data:', error);
+        }
+    }
+
     loadBarangayInfo();
+    loadLatestUserData();
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {

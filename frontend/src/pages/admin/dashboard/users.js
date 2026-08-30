@@ -339,7 +339,14 @@ function renderUsersTable() {
 }
 
 window.editUser = (id) => {
-    openEditUserModal(id, loadUsers);
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const currentUserId = currentUser.id || currentUser.Id;
+    
+    if (id === currentUserId) {
+        window.location.hash = '#edit-profile';
+    } else {
+        openEditUserModal(id, loadUsers);
+    }
 };
 
 window.viewUser = (id) => {

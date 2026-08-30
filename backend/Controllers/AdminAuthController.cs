@@ -181,4 +181,37 @@ public class AdminAuthController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = Request.Headers["X-User-Id"].FirstOrDefault();
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            return BadRequest(new { message = "User ID is required" });
+        }
+
+        var adminUser = await _context.AdminUsers
+            .Find(u => u.Id == userId)
+            .FirstOrDefaultAsync();
+
+        if (adminUser == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        var response = new
+        {
+            Id = adminUser.Id,
+            Email = adminUser.Email,
+            Username = adminUser.Username,
+            FirstName = adminUser.FirstName,
+            LastName = adminUser.LastName,
+            Role = adminUser.Role,
+            ProfilePhoto = adminUser.PhotoUrl
+        };
+
+        return Ok(response);
+    }
 }

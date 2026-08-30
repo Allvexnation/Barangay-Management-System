@@ -6,7 +6,8 @@ export const API_CONFIG = {
         ADMIN_AUTH: {
             LOGIN: `${API_BASE_URL}/adminauth/login`,
             UPDATE_PROFILE: `${API_BASE_URL}/adminauth/update-profile`,
-            UPLOAD_PHOTO: `${API_BASE_URL}/adminauth/upload-photo`
+            UPLOAD_PHOTO: `${API_BASE_URL}/adminauth/upload-photo`,
+            GET_CURRENT_USER: `${API_BASE_URL}/adminauth/me`
         },
         HOUSEHOLD: {
             GET_ALL: `${API_BASE_URL}/household`,
