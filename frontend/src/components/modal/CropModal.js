@@ -69,6 +69,8 @@ export function openCropModal(imageSrc, options = {}) {
                 height: boundarySize
             },
             showZoomer: true,
+            enableZoom: true,
+            minZoom: 0.5,
             enableResize: false,
             enableOrientation: true,
         });
