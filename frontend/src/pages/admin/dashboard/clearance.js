@@ -11,7 +11,7 @@ import { initClearanceAnimations, addTableRowHoverAnimations, addButtonHoverAnim
 let officials = [];
 let currentType = 'individual';
 
-export function renderClearancePage() {
+export async function renderClearancePage() {
     if (!checkAuthAndRedirect()) {
         return '';
     }
@@ -25,6 +25,8 @@ export function renderClearancePage() {
         ? 'Directory of issued individual clearances, certificates of residency, and good moral.' 
         : 'Directory of registered business clearances and permits.';
     const addBtnLabel = isIndividual ? 'Issue Clearance' : 'Add Business Clearance';
+
+    const navbar = await AdminNavbar();
 
     return `
         <style>
@@ -48,7 +50,7 @@ export function renderClearancePage() {
             }
         </style>
         <div class="min-h-screen bg-gray-50" style="overflow: hidden;">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

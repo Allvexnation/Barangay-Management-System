@@ -12,7 +12,6 @@ const handleAuthError = (response) => {
 
 export async function updateProfile(formData) {
     try {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
         const token = getToken();
         if (!token) {
             window.location.hash = '#adminlogin';
@@ -23,8 +22,7 @@ export async function updateProfile(formData) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'X-User-Id': user.id || ''
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(formData)
         });
@@ -47,7 +45,6 @@ export async function uploadProfilePhoto(file) {
         const formData = new FormData();
         formData.append('photo', file);
 
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
         const token = getToken();
         if (!token) {
             window.location.hash = '#adminlogin';
@@ -57,8 +54,7 @@ export async function uploadProfilePhoto(file) {
         const response = await fetch(API_CONFIG.ENDPOINTS.ADMIN_AUTH.UPLOAD_PHOTO, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-User-Id': user.id || ''
+                'Authorization': `Bearer ${token}`
             },
             body: formData
         });

@@ -3,29 +3,29 @@ import { OfficialPositionList, initOfficialPositionList } from './OfficialPositi
 import { PurokList, initPurokList } from './PurokList.js';
 import { EditProfilePage, initEditProfilePage } from './EditProfile.js';
 
-export function Settings() {
+export async function Settings() {
     const currentHash = window.location.hash;
     
     if (currentHash === '#settings-barangay') {
-        return SystemInfo();
+        return await SystemInfo();
     }
     
     if (currentHash === '#settings-positions') {
-        return OfficialPositionList();
+        return await OfficialPositionList();
     }
     
     if (currentHash === '#settings-purok') {
-        return PurokList();
+        return await PurokList();
     }
 
     if (currentHash === '#settings-profile' || currentHash === '#edit-profile' || currentHash === '#profile' || currentHash === '#settings') {
-        return EditProfilePage();
+        return await EditProfilePage();
     }
     
-    return EditProfilePage();
+    return await EditProfilePage();
 }
 
-export function initSettingsPage() {
+export async function initSettingsPage() {
     const currentHash = window.location.hash;
 
     if (currentHash === '#settings-barangay') {

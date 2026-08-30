@@ -81,7 +81,14 @@ public class AdminAuthController : ControllerBase
         
         if (string.IsNullOrEmpty(userId))
         {
-            userId = Request.Headers["X-User-Id"].FirstOrDefault();
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized(new { message = "Invalid authorization header" });
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            userId = _jwtService.GetUserIdFromToken(token);
         }
 
         if (string.IsNullOrEmpty(userId))
@@ -158,7 +165,14 @@ public class AdminAuthController : ControllerBase
             return BadRequest(new { message = "No photo uploaded" });
         }
 
-        var userId = Request.Headers["X-User-Id"].FirstOrDefault();
+        var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized(new { message = "Invalid authorization header" });
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+        var userId = _jwtService.GetUserIdFromToken(token);
         
         if (string.IsNullOrEmpty(userId))
         {
@@ -185,11 +199,18 @@ public class AdminAuthController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var userId = Request.Headers["X-User-Id"].FirstOrDefault();
+        var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized(new { message = "Invalid authorization header" });
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+        var userId = _jwtService.GetUserIdFromToken(token);
         
         if (string.IsNullOrEmpty(userId))
         {
-            return BadRequest(new { message = "User ID is required" });
+            return Unauthorized(new { message = "Invalid token" });
         }
 
         var adminUser = await _context.AdminUsers

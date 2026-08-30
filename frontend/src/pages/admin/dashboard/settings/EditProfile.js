@@ -1,17 +1,19 @@
 import { getUser } from '../../../../api/admin/auth/login.js';
 import { updateProfile, uploadProfilePhoto } from '../../../../api/admin/dashboard/settings/EditProfile.js';
 import { AdminNavbar, initAdminNavbar } from '../../../../components/admin/navbar.js';
+import { initStripBarDropdowns } from '../../../../components/admin/stripbar.js';
 import { openConfirmDialog } from '../../../../components/ConfirmDialog.js';
 import { showToast, updateToast } from '../../../../components/ToastMessage.js';
 import { checkAuthAndRedirect } from '../../../../api/token.js';
 import { initEditProfileAnimations } from '../../../../provider/animations/EditProfileAnimation.js';
+import { openCropModal } from '../../../../components/modal/CropModal.js';
 
-export function EditProfilePage() {
+export async function EditProfilePage() {
     if (!checkAuthAndRedirect()) {
         return '';
     }
 
-    const user = getUser() || {};
+    const user = await getUser() || {};
     const firstName = user.firstName || '';
     const lastName = user.lastName || '';
     const username = user.username || '';
@@ -26,9 +28,11 @@ export function EditProfilePage() {
         ? `<img id="profile-photo-img" src="${profilePhoto}" alt="Profile" class="w-full h-full object-cover rounded-full">`
         : `<div id="profile-initials-fallback" class="w-full h-full rounded-full bg-blue-900 text-blue-100 flex items-center justify-center text-2xl font-bold">${initials}</div>`;
 
+    const navbar = await AdminNavbar();
+
     return `
         <div class="min-h-screen bg-gray-50">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="mb-6">
@@ -194,9 +198,14 @@ export function EditProfilePage() {
     `;
 }
 
-export function initEditProfilePage() {
-    initAdminNavbar();
+export async function initEditProfilePage() {
+    await initAdminNavbar();
+    initStripBarDropdowns();
     initEditProfileAnimations();
+    
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
     const form = document.getElementById('edit-profile-form');
     const profilePhotoInput = document.getElementById('profilePhoto');
@@ -207,13 +216,27 @@ export function initEditProfilePage() {
     let selectedPhoto = null;
 
     if (profilePhotoInput && profilePhotoPreview) {
-        profilePhotoInput.addEventListener('change', (e) => {
+        profilePhotoInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
-                selectedPhoto = file;
                 const reader = new FileReader();
-                reader.onload = (event) => {
-                    profilePhotoPreview.innerHTML = `<img src="${event.target.result}" alt="Profile Preview" class="w-full h-full object-cover rounded-full">`;
+                reader.onload = async (event) => {
+                    const imageSrc = event.target.result;
+                    
+                    // Open crop modal with square aspect ratio
+                    const croppedFile = await openCropModal(imageSrc);
+                    
+                    if (croppedFile) {
+                        selectedPhoto = croppedFile;
+                        const croppedReader = new FileReader();
+                        croppedReader.onload = (croppedEvent) => {
+                            profilePhotoPreview.innerHTML = `<img src="${croppedEvent.target.result}" alt="Profile Preview" class="w-full h-full object-cover rounded-full">`;
+                        };
+                        croppedReader.readAsDataURL(croppedFile);
+                    } else {
+                        // User cancelled cropping, reset input
+                        profilePhotoInput.value = '';
+                    }
                 };
                 reader.readAsDataURL(file);
             }
@@ -261,28 +284,19 @@ export function initEditProfilePage() {
 
             const result = await updateProfile(formData);
 
-            const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-            currentUser.id = result.id || result.Id || currentUser.id;
-            currentUser.email = result.email || result.Email || currentUser.email;
-            currentUser.username = result.username || result.Username || currentUser.username;
-            currentUser.firstName = result.firstName || result.FirstName || currentUser.firstName;
-            currentUser.lastName = result.lastName || result.LastName || currentUser.lastName;
-            currentUser.role = result.role || result.Role || currentUser.role;
-            currentUser.profilePhoto = result.profilePhoto || result.ProfilePhoto || currentUser.profilePhoto;
-            localStorage.setItem('user', JSON.stringify(currentUser));
 
             const navUsername = document.getElementById('navUsername');
             if (navUsername) {
-                const fName = currentUser.firstName;
-                const lName = currentUser.lastName;
-                const uName = currentUser.username;
+                const fName = result.firstName || result.FirstName;
+                const lName = result.lastName || result.LastName;
+                const uName = result.username || result.Username;
                 const fullName = fName && lName ? `${fName} ${lName}` : uName || 'User';
                 navUsername.textContent = `Welcome, ${fullName}`;
             }
 
             const profileFullNameDisplay = document.getElementById('profileFullNameDisplay');
             if (profileFullNameDisplay) {
-                profileFullNameDisplay.textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`;
+                profileFullNameDisplay.textContent = `${result.firstName || result.FirstName || ''} ${result.lastName || result.LastName || ''}`;
             }
 
             const newPasswordEl = document.getElementById('settingsPassword');
@@ -306,8 +320,8 @@ export function initEditProfilePage() {
     }
 
     if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            const user = getUser() || {};
+        resetBtn.addEventListener('click', async () => {
+            const user = await getUser() || {};
             const firstNameEl = document.getElementById('settingsFirstName');
             const lastNameEl = document.getElementById('settingsLastName');
             const usernameEl = document.getElementById('settingsUsername');

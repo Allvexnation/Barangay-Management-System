@@ -3,8 +3,12 @@ import { openModal, closeModal, setModalButtonLoading } from '../../utils/modal.
 import { openConfirmDialog } from '../ConfirmDialog.js';
 import { showToast, updateToast } from '../ToastMessage.js';
 import { animateModalOpen, animateModalClose, clearModalAnimations, animateFormElements, clearFormAnimations, animateViewModalElements, clearViewModalAnimations } from './ModalAnimation.js';
+import { openCropModal } from './CropModal.js';
+
+let croppedUserImage = null;
 
 export function openAddUserModal(onSuccess) {
+    croppedUserImage = null;
     const formContent = `
         <form id="userForm" class="space-y-5">
             <fieldset>
@@ -114,6 +118,7 @@ export function openAddUserModal(onSuccess) {
 }
 
 export async function openEditUserModal(id, onSuccess) {
+    croppedUserImage = null;
     try {
         const user = await getUserById(id);
         
@@ -262,6 +267,7 @@ function handleImagePreview(e) {
             previewContainer.innerHTML = `<i data-lucide="user" class="w-8 h-8 text-gray-400" id="imagePreviewIcon"></i>`;
             photoUrlInput.value = '';
         }
+        croppedUserImage = null;
         if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
     }
@@ -280,8 +286,33 @@ function handleImagePreview(e) {
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-        previewContainer.innerHTML = `<img src="${event.target.result}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+    reader.onload = async (event) => {
+        const imageSrc = event.target.result;
+        
+        const croppedFile = await openCropModal(imageSrc);
+        
+        if (croppedFile) {
+            croppedUserImage = croppedFile;
+            e.target.value = '';
+            const croppedReader = new FileReader();
+            croppedReader.onload = (croppedEvent) => {
+                previewContainer.innerHTML = `<img src="${croppedEvent.target.result}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+                photoUrlInput.value = croppedEvent.target.result;
+            };
+            croppedReader.readAsDataURL(croppedFile);
+        } else {
+            croppedUserImage = null;
+            const existingPhotoUrl = document.getElementById('existingPhotoUrl')?.value || '';
+            if (existingPhotoUrl) {
+                previewContainer.innerHTML = `<img src="${existingPhotoUrl}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+                photoUrlInput.value = existingPhotoUrl;
+            } else {
+                previewContainer.innerHTML = `<i data-lucide="user" class="w-8 h-8 text-gray-400" id="imagePreviewIcon"></i>`;
+                photoUrlInput.value = '';
+            }
+            e.target.value = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
     };
     reader.readAsDataURL(file);
     hideFormError();
@@ -408,9 +439,9 @@ async function performUserSubmit(id, onSuccess, photoFileInput, formData, button
     showToast(loadingMessage, 'loading');
 
     try {
-        if (photoFileInput && photoFileInput.files.length > 0) {
+        if (croppedUserImage) {
             try {
-                const uploadResult = await uploadUserImage(photoFileInput.files[0]);
+                const uploadResult = await uploadUserImage(croppedUserImage);
                 formData.photoUrl = uploadResult.url;
             } catch (uploadError) {
                 console.warn('Image upload failed, continuing without photo:', uploadError);

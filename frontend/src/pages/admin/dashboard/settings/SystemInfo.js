@@ -2,12 +2,18 @@ import { getSystemInfo, createSystemInfo, updateSystemInfo, getSystemInfoAuditLo
 import { AdminNavbar, initAdminNavbar } from '../../../../components/admin/navbar.js';
 import { openConfirmDialog } from '../../../../components/ConfirmDialog.js';
 import { showToast, updateToast } from '../../../../components/ToastMessage.js';
-import { isAdmin } from '../../../../api/token.js';
+import { getUser } from '../../../../api/admin/auth/login.js';
 import { skeletonText, skeletonAvatar, skeletonButton } from '../../../../components/SkeletonLoading.js';
 import { initSystemInfoAnimations, animateAuditLogs } from '../../../../provider/animations/SystemInfoAniamtion.js';
+import { openCropModal } from '../../../../components/modal/CropModal.js';
 
-export function SystemInfo() {
-    if (!isAdmin()) {
+let croppedLogoImage = null;
+
+export async function SystemInfo() {
+    const user = await getUser() || {};
+    const userRole = user.role || 'Admin';
+    
+    if (userRole !== 'Admin') {
         return `
         <div class="min-h-screen bg-gray-50 flex items-center justify-center">
             <div class="text-center">
@@ -19,9 +25,11 @@ export function SystemInfo() {
         `;
     }
 
+    const navbar = await AdminNavbar();
+
     return `
         <div class="min-h-screen bg-gray-50" style="overflow-y: auto;">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="mb-6">
@@ -294,13 +302,40 @@ export function initSystemInfo() {
     }
 
     if (logoInput) {
-        logoInput.addEventListener('change', function (e) {
+        logoInput.addEventListener('change', async function (e) {
             const file = e.target.files[0];
             if (file) {
-                selectedLogo = file;
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('File size exceeds 2MB limit.', 'error');
+                    e.target.value = '';
+                    return;
+                }
+
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showToast('Invalid file type. Only JPG, PNG, or WEBP are allowed.', 'error');
+                    e.target.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    if (logoPreview) logoPreview.src = e.target.result;
+                reader.onload = async (event) => {
+                    const imageSrc = event.target.result;
+                    
+                    const croppedFile = await openCropModal(imageSrc);
+                    
+                    if (croppedFile) {
+                        croppedLogoImage = croppedFile;
+                        e.target.value = '';
+                        const croppedReader = new FileReader();
+                        croppedReader.onload = (croppedEvent) => {
+                            if (logoPreview) logoPreview.src = croppedEvent.target.result;
+                        };
+                        croppedReader.readAsDataURL(croppedFile);
+                    } else {
+                        croppedLogoImage = null;
+                        e.target.value = '';
+                    }
                 };
                 reader.readAsDataURL(file);
             }
@@ -343,7 +378,7 @@ export function initSystemInfo() {
             city: document.getElementById('city').value.trim(),
             province: document.getElementById('province').value.trim(),
             zipCode: document.getElementById('zipCode').value.trim(),
-            logo: selectedLogo
+            logo: croppedLogoImage
         };
 
         try {
@@ -356,7 +391,7 @@ export function initSystemInfo() {
 
             updateToast(successMessage, 'success');
             existingSystemInfo = result;
-            selectedLogo = null;
+            croppedLogoImage = null;
             if (logoInput) logoInput.value = '';
             loadAuditLogs();
         } catch (error) {
@@ -406,7 +441,7 @@ export function initSystemInfo() {
                 logoPreview.src = defaultSealPlaceholder;
             }
         }
-        selectedLogo = null;
+        croppedLogoImage = null;
         if (logoInput) logoInput.value = '';
     }
 

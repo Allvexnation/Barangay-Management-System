@@ -17,10 +17,12 @@ let positions = [];
 let searchQuery = '';
 let selectedPosition = '';
 
-export function renderOfficialsPage() {
+export async function renderOfficialsPage() {
     if (!checkAuthAndRedirect()) {
         return '';
     }
+
+    const navbar = await AdminNavbar();
 
     return `
         <style>
@@ -44,7 +46,7 @@ export function renderOfficialsPage() {
             }
         </style>
         <div class="min-h-screen bg-gray-50" style="overflow: hidden;">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -145,8 +147,8 @@ export function renderOfficialsPage() {
     `;
 }
 
-export function initOfficialsPage() {
-    initAdminNavbar();
+export async function initOfficialsPage() {
+    await initAdminNavbar();
     loadPositions();
     loadOfficials();
 

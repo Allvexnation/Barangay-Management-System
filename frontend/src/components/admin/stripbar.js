@@ -1,10 +1,9 @@
-import { isAdmin } from '../../api/token.js';
 
-export function AdminStripBar() {
+export function AdminStripBar(userRole = 'Admin') {
     const currentHash = window.location.hash || '#admindashboard';
     const stripBarState = localStorage.getItem('adminStripBarState') || 'collapsed';
     const initialMaxHeight = stripBarState === 'expanded' ? '500px' : '0';
-    const userIsAdmin = isAdmin();
+    const userIsAdmin = userRole === 'Admin';
 
     const isClearanceActive = currentHash === '#clearance-individual' || currentHash === '#clearance-business';
     const isSettingsActive = currentHash === '#settings-barangay' || currentHash === '#settings-positions' || currentHash === '#settings-purok' || currentHash === '#settings-profile' || currentHash === '#edit-profile' || currentHash === '#settings';

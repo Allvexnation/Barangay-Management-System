@@ -3,8 +3,12 @@ import { openConfirmDialog } from '../ConfirmDialog.js';
 import { ModalButton } from '../buttons/ModalButton.js';
 import { uploadOfficialImage, getOfficialAuditLogs } from '../../api/admin/dashboard/officials.js';
 import { animateModalOpen, animateModalClose, clearModalAnimations, animateFormElements, clearFormAnimations, animateViewModalElements, clearViewModalAnimations } from './ModalAnimation.js';
+import { openCropModal } from './CropModal.js';
+
+let croppedOfficialImage = null;
 
 export function openOfficialsModal({ mode = 'add', official = null, positions = [], onSubmit, isLoading = false }) {
+    croppedOfficialImage = null;
     const isEdit = mode === 'edit';
     const title = isEdit ? 'Edit Official' : 'New Barangay Official';
     const buttonText = isEdit ? 'Save Changes' : 'Add Official';
@@ -172,6 +176,7 @@ function handleImagePreview(e) {
             previewContainer.innerHTML = `<i data-lucide="user" class="w-8 h-8 text-gray-400" id="imagePreviewIcon"></i>`;
             imageUrlInput.value = '';
         }
+        croppedOfficialImage = null;
         if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
     }
@@ -190,8 +195,33 @@ function handleImagePreview(e) {
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-        previewContainer.innerHTML = `<img src="${event.target.result}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+    reader.onload = async (event) => {
+        const imageSrc = event.target.result;
+        
+        const croppedFile = await openCropModal(imageSrc);
+        
+        if (croppedFile) {
+            croppedOfficialImage = croppedFile;
+            e.target.value = '';
+            const croppedReader = new FileReader();
+            croppedReader.onload = (croppedEvent) => {
+                previewContainer.innerHTML = `<img src="${croppedEvent.target.result}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+                imageUrlInput.value = croppedEvent.target.result;
+            };
+            croppedReader.readAsDataURL(croppedFile);
+        } else {
+            croppedOfficialImage = null;
+            const existingImageUrl = document.getElementById('existingImageUrl')?.value || '';
+            if (existingImageUrl) {
+                previewContainer.innerHTML = `<img src="${existingImageUrl}" alt="Preview" class="w-full h-full object-cover" id="imagePreview">`;
+                imageUrlInput.value = existingImageUrl;
+            } else {
+                previewContainer.innerHTML = `<i data-lucide="user" class="w-8 h-8 text-gray-400" id="imagePreviewIcon"></i>`;
+                imageUrlInput.value = '';
+            }
+            e.target.value = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
     };
     reader.readAsDataURL(file);
     hideFormError();
@@ -200,13 +230,12 @@ function handleImagePreview(e) {
 async function processOfficialsSubmit(id, buttonText, onSubmit) {
     hideFormError();
 
-    const imageUpload = document.getElementById('imageUpload');
     let imageUrl = document.getElementById('imageUrl').value;
 
-    if (imageUpload && imageUpload.files.length > 0) {
+    if (croppedOfficialImage) {
         setModalButtonLoading('submitBtn', true, 'Uploading image...');
         try {
-            const uploadResult = await uploadOfficialImage(imageUpload.files[0]);
+            const uploadResult = await uploadOfficialImage(croppedOfficialImage);
             imageUrl = uploadResult.imageUrl;
             document.getElementById('imageUrl').value = imageUrl;
         } catch (error) {

@@ -65,6 +65,7 @@ export function showToast(message, type = 'success') {
         animation: slideIn 0.3s ease-out;
         font-family: system-ui, -apple-system, sans-serif;
         font-size: 13px;
+        pointer-events: auto;
     `;
 
     toast.innerHTML = `
@@ -191,6 +192,13 @@ style.textContent = `
         to {
             transform: rotate(360deg);
         }
+    }
+    #toast-container > div:hover {
+        transform: none !important;
+        transition: none !important;
+    }
+    #toast-container:hover {
+        transform: translateX(-50%) !important;
     }
 `;
 document.head.appendChild(style);

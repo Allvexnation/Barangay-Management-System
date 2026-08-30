@@ -23,17 +23,18 @@ function formatDate() {
     });
 }
 
-export function renderDashboardPage() {
+export async function renderDashboardPage() {
     if (!checkAuthAndRedirect()) {
         return '';
     }
 
-    const user = getUser();
+    const user = await getUser();
     const displayName = user?.firstName || 'Admin';
+    const navbar = await AdminNavbar();
 
     return `
         <div class="min-h-screen bg-gray-50" style="overflow: auto;">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="mb-6">
@@ -329,7 +330,7 @@ window.changePage = changePage;
 
 export async function initAdminDashboardPage() {
     initTheme();
-    initAdminNavbar();
+    await initAdminNavbar();
 
     try {
         const stats = await getDashboardStats();

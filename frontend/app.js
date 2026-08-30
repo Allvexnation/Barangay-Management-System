@@ -86,11 +86,11 @@ export class App {
         return window.location.hash || '';
     }
 
-    render() {
+    async render() {
         const route = this.getCurrentRoute();
         const pageComponent = this.routes[route] || this.routes[''];
 
-        this.root.innerHTML = pageComponent();
+        this.root.innerHTML = await pageComponent();
 
         const tabName = this.tabNames[route] || null;
         updatePageTitle(tabName, route);
@@ -103,7 +103,7 @@ export class App {
 
         const initFunction = this.initFunctions[route] || this.initFunctions[''];
         if (initFunction) {
-            initFunction();
+            await initFunction();
         }
 
         if (window.lucide) {

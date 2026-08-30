@@ -1,5 +1,6 @@
 import { getAllUsers, deleteUser } from '../../../api/admin/dashboard/users.js';
-import { checkAuthAndRedirect, isAdmin } from '../../../api/token.js';
+import { checkAuthAndRedirect } from '../../../api/token.js';
+import { getUser } from '../../../api/admin/auth/login.js';
 import { AdminNavbar, initAdminNavbar } from '../../../components/admin/navbar.js';
 import { openAddUserModal, openEditUserModal, openViewUserModal } from '../../../components/modal/UsersModal.js';
 import { CrudMenu } from '../../../components/CrudMenu.js';
@@ -13,12 +14,15 @@ let filteredUsers = [];
 let searchQuery = '';
 let selectedRole = '';
 
-export function renderUsersPage() {
+export async function renderUsersPage() {
     if (!checkAuthAndRedirect()) {
         return '';
     }
     
-    if (!isAdmin()) {
+    const user = await getUser() || {};
+    const userRole = user.role || 'Admin';
+    
+    if (userRole !== 'Admin') {
         return `
         <div class="min-h-screen bg-gray-50 flex items-center justify-center">
             <div class="text-center">
@@ -30,6 +34,8 @@ export function renderUsersPage() {
         `;
     }
     
+    const navbar = await AdminNavbar();
+
     return `
         <style>
             ::-webkit-scrollbar {
@@ -52,7 +58,7 @@ export function renderUsersPage() {
             }
         </style>
         <div class="min-h-screen bg-gray-50" style="overflow: hidden;">
-            ${AdminNavbar()}
+            ${navbar}
 
             <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
